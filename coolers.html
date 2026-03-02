@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Coolers Inventory - Cooler Shop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background: #f4f6f9;
+    }
+    .section-title {
+      font-weight: 600;
+    }
+    .badge-stock {
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+
+<body>
+<div class="container-fluid mt-4 px-4">
+
+  <h3 class="mb-4">🧊 Coolers Inventory Management</h3>
+
+  <div class="row">
+
+    <!-- LEFT PANEL -->
+    <div class="col-md-4">
+
+      <!-- ADD BRAND -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          <h6 class="section-title mb-3">➕ Add Brand</h6>
+          <input id="newBrand" class="form-control mb-2" placeholder="Brand Name">
+          <button onclick="addBrand()" class="btn btn-primary w-100">
+            Add Brand
+          </button>
+        </div>
+      </div>
+
+      <!-- ADD COOLER -->
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h6 class="section-title mb-3">➕ Add Cooler</h6>
+
+          <select id="brand" class="form-control mb-2">
+            <option value="">Select Brand</option>
+          </select>
+
+          <input id="model" class="form-control mb-2" placeholder="Model Name">
+          <input id="price" type="number" class="form-control mb-2" placeholder="Price">
+          <input id="qty" type="number" class="form-control mb-2" placeholder="Opening Stock">
+          <input id="capacity" class="form-control mb-2" placeholder="Cooling Capacity (eg. 70L)">
+          <input id="power" class="form-control mb-3" placeholder="Power Consumption (eg. 200W)">
+
+          <button onclick="addCooler()" class="btn btn-success w-100">
+            Add Cooler
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="col-md-8">
+
+      <!-- BRANDS LIST -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          <h6 class="section-title mb-3">🏷️ Brands</h6>
+          <table class="table table-sm text-center">
+            <tbody id="brandTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- COOLERS TABLE -->
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h6 class="section-title mb-3">📦 Coolers Stock</h6>
+
+          <table class="table table-bordered align-middle text-center">
+            <thead class="table-dark">
+              <tr>
+                <th>Brand</th>
+                <th>Model</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th width="160">Update</th>
+                <th>Delete</th>
+              </tr>
+            </thead>
+            <tbody id="coolerTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<script>
+const API = "http://localhost:3000";
+
+/* DOM */
+const brand = document.getElementById("brand");
+const brandTable = document.getElementById("brandTable");
+const coolerTable = document.getElementById("coolerTable");
+const newBrand = document.getElementById("newBrand");
+const model = document.getElementById("model");
+const price = document.getElementById("price");
+const qty = document.getElementById("qty");
+const capacity = document.getElementById("capacity");
+const power = document.getElementById("power");
+
+/* LOAD BRANDS */
+function loadBrands() {
+  fetch(API + "/brands")
+    .then(res => res.json())
+    .then(data => {
+      let opt = `<option value="">Select Brand</option>`;
+      let rows = "";
+
+      data.forEach(b => {
+        opt += `<option value="${b.id}">${b.name}</option>`;
+        rows += `
+          <tr>
+            <td>${b.name}</td>
+            <td>
+              <button class="btn btn-sm btn-danger"
+                onclick="deleteBrand(${b.id})">
+                Delete
+              </button>
+            </td>
+          </tr>`;
+      });
+
+      brand.innerHTML = opt;
+      brandTable.innerHTML = rows;
+    });
+}
+loadBrands();
+
+/* ADD BRAND */
+function addBrand() {
+  if (!newBrand.value) return alert("Enter brand name");
+
+  fetch(API + "/brands", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name: newBrand.value })
+  }).then(() => {
+    newBrand.value = "";
+    loadBrands();
+  });
+}
+
+function deleteBrand(id) {
+  if (!confirm("Delete this brand?")) return;
+  fetch(API + "/brands/" + id, { method: "DELETE" })
+    .then(res => {
+      if (!res.ok) alert("Cannot delete brand. Coolers exist.");
+      else loadBrands();
+    });
+}
+
+/* LOAD COOLERS */
+function loadCoolers() {
+  fetch(API + "/coolers")
+    .then(res => res.json())
+    .then(data => {
+      let rows = "";
+
+      data.forEach(c => {
+        let badge =
+          c.quantity === 0
+            ? `<span class="badge bg-danger badge-stock">Out</span>`
+            : c.quantity < 5
+            ? `<span class="badge bg-warning text-dark badge-stock">Low</span>`
+            : `<span class="badge bg-success badge-stock">In Stock</span>`;
+
+        rows += `
+          <tr>
+            <td>${c.brand}</td>
+            <td>${c.model_name}</td>
+            <td>₹${c.price}</td>
+            <td>${c.quantity} <br>${badge}</td>
+            <td>
+              <input type="number" id="q${c.id}" class="form-control form-control-sm mb-1">
+              <button class="btn btn-sm btn-primary w-100"
+                onclick="updateStock(${c.id})">
+                Update
+              </button>
+            </td>
+            <td>
+              <button class="btn btn-sm btn-danger"
+                onclick="deleteCooler(${c.id})">
+                Delete
+              </button>
+            </td>
+          </tr>`;
+      });
+
+      coolerTable.innerHTML = rows;
+    });
+}
+loadCoolers();
+
+/* ADD COOLER */
+function addCooler() {
+  if (!brand.value || !model.value || !price.value || !qty.value)
+    return alert("Fill all required fields");
+
+  fetch(API + "/coolers", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      brand_id: brand.value,
+      model_name: model.value,
+      price: price.value,
+      quantity: qty.value,
+      cooling_capacity: capacity.value,
+      power_consumption: power.value
+    })
+  }).then(() => {
+    model.value = price.value = qty.value = capacity.value = power.value = "";
+    loadCoolers();
+  });
+}
+
+/* UPDATE STOCK */
+function updateStock(id) {
+  fetch(API + "/coolers/stock/" + id, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      quantity: document.getElementById("q" + id).value
+    })
+  }).then(() => loadCoolers());
+}
+
+/* DELETE COOLER */
+function deleteCooler(id) {
+  if (!confirm("Delete this cooler?")) return;
+  fetch(API + "/coolers/" + id, { method: "DELETE" })
+    .then(() => loadCoolers());
+}
+</script>
+
+</body>
+</html>

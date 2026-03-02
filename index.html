@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cooler Shop Management System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background: linear-gradient(135deg, #e3f2fd, #f8f9fa);
+      min-height: 100vh;
+    }
+    .hero {
+      padding: 80px 20px;
+    }
+    .hero h1 {
+      font-weight: 700;
+    }
+    .hero p {
+      font-size: 1.1rem;
+    }
+    .feature-card {
+      border: none;
+      border-radius: 15px;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .feature-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+    .feature-icon {
+      font-size: 40px;
+    }
+    footer {
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="index.html">🧊 Cooler Shop</a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="menu">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="customers.html">Customers</a></li>
+        <li class="nav-item"><a class="nav-link" href="coolers.html">Coolers</a></li>
+        <li class="nav-item"><a class="nav-link" href="sales.html">Sales</a></li>
+      <li class="nav-item">
+  <a class="nav-link" href="sales-history.html">Sales History</a>
+</li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO SECTION -->
+<div class="container hero text-center">
+  <h1 class="mb-3">Cooler Shop Management System</h1>
+  <p class="text-muted mb-4">
+    A smart way to manage stock, customers, sales and billing in one place
+  </p>
+
+  <div class="row mt-5">
+    <div class="col-md-3 mb-4">
+      <div class="card feature-card h-100 text-center p-3">
+        <div class="feature-icon mb-3">📊</div>
+        <h5>Dashboard</h5>
+        <p class="text-muted">View total sales, stock & performance</p>
+        <a href="dashboard.html" class="btn btn-primary btn-sm">Open</a>
+      </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+      <div class="card feature-card h-100 text-center p-3">
+        <div class="feature-icon mb-3">👥</div>
+        <h5>Customers</h5>
+        <p class="text-muted">Manage customers & purchase history</p>
+        <a href="customers.html" class="btn btn-success btn-sm">Open</a>
+      </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+      <div class="card feature-card h-100 text-center p-3">
+        <div class="feature-icon mb-3">🧊</div>
+        <h5>Coolers</h5>
+        <p class="text-muted">Add, update & manage cooler stock</p>
+        <a href="coolers.html" class="btn btn-warning btn-sm">Open</a>
+      </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+      <div class="card feature-card h-100 text-center p-3">
+        <div class="feature-icon mb-3">🧾</div>
+        <h5>Sales</h5>
+        <p class="text-muted">Billing & automatic stock update</p>
+        <a href="sales.html" class="btn btn-danger btn-sm">Open</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="text-center mt-4 text-muted">
+  <hr>
+  <p>
+    Final Year Project | Cooler Shop Management System <br>
+    Developed using Node.js, MySQL & Bootstrap
+  </p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
